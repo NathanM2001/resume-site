@@ -1,0 +1,4 @@
+#The never save list
+.env
+node_modules/
+
