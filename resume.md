@@ -17,7 +17,7 @@ Keller, TX | linkedin.com/in/nathan-mckenzie1 | github.com/NathanM2001
 ### Highlights
 - **110:** New stores supported with my team
 - **1,200+:** Stores reached in company-wide rollouts
-- **30:** Store network migrations
+- **2+:** Years in retail store technology
 - **5:** Overnight remodels managed
 
 ### What I Do
@@ -48,7 +48,7 @@ Irving, TX (Corporate) | May 2024 – Present
 **Network Infrastructure & Hardware Deployment**
 - **Printer Rollout:** Coordinated with store managers to roll out new Lexmark office printers and remotely configured them in every Michaels store across the U.S. and Canada (1,200+ stores).
 - **New Service Launch:** As part of a 4–5 person team, coordinated technicians installing Canon printers and remotely configured them to launch Michaels' 10-minute printing service across 1,200+ stores.
-- **Network Migration:** Worked with technicians to complete Cisco Meraki-to-Fortinet switch migrations in 30 stores across the U.S., including cabling remediation, data-cabinet reorganization, and switch-port mapping, and verified all equipment was back online.
+- **Network Migration:** Worked with technicians to complete Cisco Meraki-to-Fortinet switch migrations in multiple stores across the U.S., including cabling remediation, data-cabinet reorganization, and switch-port mapping, and verified all equipment was back online.
 - **Payment Terminals:** Installed and coordinated installs of store PIN pads, registered devices in Estate Manager, and coordinated network details with the warehouse team for secure provisioning.
 **Logistics, Vendors & Process Improvement**
 - **Vendor & Field Oversight:** Coordinated with a network of third-party vendors, freight carriers, warehouse teams, field technicians, and IT service providers, and sourced rapid equipment replacements when needed to support store opening deadlines.
@@ -87,7 +87,7 @@ Nathan McKenzie is a New Store Systems Specialist at Michaels, working at the co
  
 He works on hard deadlines. Grand opening dates have never been pushed back, and remodel work happens overnight from 9 PM to 9 AM, with every system that was taken offline reinstalled and tested before the store opens. He coordinates vendors, freight carriers, the warehouse, field technicians, IT service providers, and store managers to make that happen.
  
-He has also worked on large-scale rollouts and infrastructure projects, including a Lexmark printer rollout to every Michaels store in the U.S. and Canada (1,200+ stores), Cisco Meraki-to-Fortinet switch migrations in 30 stores, Canon printer installs for Michaels' 10-minute printing service, and remote onboarding of in-store server cluster nodes.
+He has also worked on large-scale rollouts and infrastructure projects, including a Lexmark printer rollout to every Michaels store in the U.S. and Canada (1,200+ stores), Cisco Meraki-to-Fortinet switch migrations in multiple stores, Canon printer installs for Michaels' 10-minute printing service, and remote onboarding of in-store server cluster nodes.
  
 He catches problems early and solves them before they delay a grand opening.
  
@@ -132,7 +132,7 @@ Each remodel night runs from 9 PM to 9 AM around active construction. Before wor
 ##### Other projects
 - **Printer rollout:** Worked with store managers to roll out new Lexmark office printers, replacing the office printers in every Michaels store in the U.S. and Canada (1,200+ stores).
 - **10-minute printing launch:** Was part of a 4–5 person team that installed and configured Canon printers in 1,200+ stores to launch Michaels' 10-minute printing service. Nathan scheduled installs with store managers, made sure equipment was on site and a store employee was available, coordinated technicians for the install, and remotely configured printers afterward.
-- **Network migration:** Worked with technicians to complete Cisco Meraki-to-Fortinet switch migrations in 30 stores across the U.S. They removed the old switches, installed new Fortinet switches, reorganized data cabinets, and mapped every connection to the correct port. Nathan then verified each switch was online by accessing it and checking its ports.
+- **Network migration:** Worked with technicians to complete Cisco Meraki-to-Fortinet switch migrations in multiple stores across the U.S. They removed the old switches, installed new Fortinet switches, reorganized data cabinets, and mapped every connection to the correct port. Nathan then verified each switch was online by accessing it and checking its ports.
 - **In-store server clusters:** Configured BIOS and Intel AMT remote management settings on Lenovo cluster nodes before they shipped to stores, then remotely onboarded and verified each node through MeshCommander once installed.
 - **Payment terminals:** Installs store PIN pads on site and coordinates technician installs when he isn't at the store. Registers each device in Estate Manager and coordinates network details with the warehouse team so each terminal can be provisioned securely.
 - **Team templates:** When Nathan joined, the team's documents were unorganized, so he created templates for common tasks and requirements that made the team's work easier and more consistent, along with the install-week tracker and equipment test document the team uses on every store.
