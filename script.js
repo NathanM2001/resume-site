@@ -1,14 +1,19 @@
 // script.js
-// Loads resume.md, keeps ONLY the Website Summary part, and fills in the page.
-// The AI Details part is cut off and never displayed.
+// Loads resume.md, keeps ONLY the Website Summary part, turns it into a data
+// object, and builds the page from that object.
+// The AI Details part is cut off and never read by the parser.
 
 const START_MARKER = "<!-- WEBSITE-SUMMARY-START -->";
 const END_MARKER = "<!-- WEBSITE-SUMMARY-END -->";
 
-// Which resume.md heading goes into which <section> in index.html.
-const SECTION_IDS = {
+// Which resume.md heading fills which part of the data object.
+const SECTION_KEYS = {
+  "hero": "hero",
+  "highlights": "highlights",
+  "what i do": "whatIDo",
+  "contact": "contact",
   "summary": "summary",
-  "professional experience": "experience",
+  "professional experience": "work",
   "projects": "projects",
   "education": "education",
   "technical & delivery capabilities": "skills",
@@ -27,29 +32,116 @@ async function loadSummary() {
     throw new Error("Could not find the WEBSITE-SUMMARY markers in resume.md");
   }
   // Only the text between the markers. Everything after END_MARKER (AI Details) is dropped here.
-  return fullText.slice(start + START_MARKER.length, end);
+  const summary = fullText.slice(start + START_MARKER.length, end);
+
+  // Safety check: if the AI Details part ever ends up inside the summary
+  // (for example, a marker gets moved by mistake), stop instead of showing it.
+  if (summary.includes("AI-DETAILS-START") || summary.includes("AI-DETAILS-END")) {
+    throw new Error("The AI Details part is inside the Website Summary markers in resume.md");
+  }
+  return summary;
 }
 
-// ---------- Step 2: turn each line into a simple "block" ----------
+// ---------- Step 2: parse the text into one data object ----------
 
-function parseLines(text) {
-  const blocks = [];
+// "**Status:** Open to roles" -> { key: "Status", value: "Open to roles" }
+function splitKeyValue(text) {
+  const match = text.match(/^\*\*(.+?)\*\*\s*(.*)$/);
+  if (!match) return { key: "", value: text };
+  return { key: match[1].replace(/:$/, "").trim(), value: match[2].replace(/^:\s*/, "").trim() };
+}
+
+function parseResume(text) {
+  const data = {
+    name: "", tagline: "", location: "", links: {},
+    hero: {}, highlights: [], whatIDo: [], contact: "",
+    summary: "", work: [], education: [], projects: [], skills: [],
+  };
+
+  let current = null;   // which part of `data` we're filling, e.g. "work"
+  let entry = null;     // the current job or project
+  let headerLines = 0;  // plain lines right after the name: tagline, then contact line
+
   for (const rawLine of text.split("\n")) {
     const line = rawLine.trim();
     if (line === "") continue;
 
     const heading = line.match(/^(#{1,6})\s+(.*)$/);
+    const listItem = line.match(/^(?:-|\d+\.)\s+(.*)$/); // "- item" or "1. item"
+
+    // Name, then tagline and contact line under it.
+    if (heading && heading[1].length === 1) {
+      data.name = heading[2];
+      headerLines = 1;
+      continue;
+    }
+    if (headerLines > 0 && !heading && !current) {
+      if (headerLines === 1) {
+        data.tagline = line;
+      } else {
+        for (const item of line.split("|").map((s) => s.trim())) {
+          if (item.includes("linkedin.com")) data.links.linkedin = "https://" + item;
+          else if (item.includes("github.com")) data.links.github = "https://" + item;
+          else data.location = item;
+        }
+      }
+      headerLines++;
+      continue;
+    }
+
     if (heading) {
-      blocks.push({ type: "heading", level: heading[1].length, text: heading[2] });
-    } else if (line.startsWith("- ")) {
-      blocks.push({ type: "bullet", text: line.slice(2) });
-    } else if (/^\*\*[^*]+\*\*$/.test(line)) {
-      blocks.push({ type: "group", text: line.slice(2, -2) }); // a whole line in **bold**
+      const key = SECTION_KEYS[heading[2].toLowerCase()];
+      if (key) {
+        current = key;
+        entry = null;
+      } else if (current === "work" || current === "projects") {
+        // A job or project: "Company | Role" or "Project | Status"
+        const [title, ...rest] = heading[2].split("|").map((s) => s.trim());
+        entry = { title, subtitle: rest.join(" · "), meta: "", groups: [{ title: "", bullets: [] }] };
+        data[current].push(entry);
+      } else {
+        console.warn("Heading not used on the page:", heading[2]);
+      }
+      continue;
+    }
+
+    if (listItem) {
+      const item = listItem[1];
+      const { key, value } = splitKeyValue(item);
+      if (current === "hero") data.hero[key.toLowerCase()] = value;
+      else if (current === "highlights") data.highlights.push({ number: key, label: value });
+      else if (current === "whatIDo") data.whatIDo.push({ title: key, description: value });
+      else if (current === "contact") data.contact = item;
+      else if (current === "skills") data.skills.push({ category: key, items: value.split(",").map((s) => s.trim()) });
+      else if (entry) entry.groups[entry.groups.length - 1].bullets.push(item);
+      else console.warn("List item not used on the page:", item);
+      continue;
+    }
+
+    // A whole line in **bold** inside a job starts a new group of bullets.
+    if (entry && /^\*\*[^*]+\*\*$/.test(line)) {
+      entry.groups.push({ title: line.slice(2, -2), bullets: [] });
+      continue;
+    }
+
+    // Plain text lines.
+    if (current === "summary") {
+      data.summary += (data.summary ? " " : "") + line;
+    } else if (current === "education") {
+      const [school, degree, date] = line.split("|").map((s) => s.trim());
+      data.education.push({ school, degree, date });
+    } else if (entry && !entry.meta) {
+      entry.meta = line; // location and dates line under a job
     } else {
-      blocks.push({ type: "text", text: line });
+      console.warn("Line not used on the page:", line);
     }
   }
-  return blocks;
+
+  // Drop empty "no title" groups (jobs whose bullets all sit under bold group titles).
+  for (const e of [...data.work, ...data.projects]) {
+    e.groups = e.groups.filter((g) => g.title || g.bullets.length);
+  }
+  return data;
 }
 
 // ---------- Step 3: helpers that build page elements ----------
@@ -68,123 +160,67 @@ function addFormattedText(node, text) {
   parts.forEach((part, i) => {
     if (part === "") return;
     if (i % 2 === 1) {
-      node.appendChild(el("strong", part));
+      const strong = document.createElement("strong");
+      strong.textContent = part;
+      node.appendChild(strong);
     } else {
       node.appendChild(document.createTextNode(part));
     }
   });
 }
 
-// "linkedin.com/in/x" -> clickable link. Anything else stays plain text.
-function contactItem(item) {
-  if (/^[\w-]+\.(com|org|net|io|dev)\//.test(item)) {
-    const link = el("a", item);
-    link.href = "https://" + item;
-    link.target = "_blank";
-    link.rel = "noopener";
-    return link;
-  }
-  return el("span", item);
+// ---------- Step 4: build each part of the page ----------
+
+function renderNav(data) {
+  document.getElementById("nav-name").textContent = data.name;
+  document.title = data.name + " | " + data.tagline;
 }
 
-// ---------- Step 4: put the blocks onto the page ----------
+// ---------- Step 5: navigation behavior ----------
 
-function render(blocks) {
-  let section = null;  // the <section> we're currently filling
-  let entry = null;    // the current job/project inside it
-  let list = null;     // the current <ul>, if we're in a run of bullets
-  let lastWasEntryHeading = false;
-  let headerLines = 0; // plain lines right after the name: tagline, then contact
+// Highlights the nav link for the section currently in the middle of the screen.
+function setupScrollSpy() {
+  const links = document.querySelectorAll(".nav-links a");
+  const linkFor = {};
+  links.forEach((a) => { linkFor[a.getAttribute("href").slice(1)] = a; });
 
-  for (const block of blocks) {
-    const container = entry || section;
-
-    // Name (# heading) and the lines right under it go in the header.
-    if (block.type === "heading" && block.level === 1) {
-      document.getElementById("name").textContent = block.text;
-      document.title = block.text + " | Resume";
-      headerLines = 1;
-      continue;
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      links.forEach((a) => a.removeAttribute("aria-current"));
+      linkFor[entry.target.id].setAttribute("aria-current", "location");
     }
-    if (headerLines > 0 && block.type === "text" && !section) {
-      if (headerLines === 1) {
-        document.getElementById("tagline").textContent = block.text;
-      } else {
-        const contact = document.getElementById("contact");
-        block.text.split(" | ").forEach((item, i) => {
-          if (i > 0) contact.appendChild(el("span", "|", "sep"));
-          contact.appendChild(contactItem(item.trim()));
-        });
-      }
-      headerLines++;
-      continue;
-    }
+  }, { rootMargin: "-50% 0px -50% 0px" }); // a thin line across the middle of the screen
 
-    if (block.type === "heading") {
-      const sectionId = SECTION_IDS[block.text.toLowerCase()];
-      if (sectionId) {
-        // Start a new main section.
-        section = document.getElementById(sectionId);
-        section.appendChild(el("h2", block.text));
-        entry = null;
-      } else if (section) {
-        // A job or project inside the section: "Company | Role"
-        entry = el("article", null, "entry");
-        const [company, ...rest] = block.text.split(" | ");
-        const h3 = el("h3", company);
-        if (rest.length) h3.appendChild(el("span", " · " + rest.join(" · "), "role"));
-        entry.appendChild(h3);
-        section.appendChild(entry);
-        lastWasEntryHeading = true;
-        list = null;
-        continue;
-      } else {
-        console.warn("Heading not placed on the page:", block.text);
-      }
-      list = null;
-      lastWasEntryHeading = false;
-      continue;
-    }
-
-    if (!container) {
-      console.warn("Line not placed on the page:", block.text);
-      continue;
-    }
-
-    if (block.type === "bullet") {
-      if (!list) {
-        list = el("ul");
-        container.appendChild(list);
-      }
-      list.appendChild(buildBullet(block.text, section));
-    } else if (block.type === "group") {
-      container.appendChild(el("h4", block.text, "group"));
-      list = null;
-    } else {
-      // Plain text right under a job heading is its location/dates line.
-      container.appendChild(el("p", block.text, lastWasEntryHeading ? "meta" : null));
-      list = null;
-    }
-    lastWasEntryHeading = false;
-  }
+  Object.keys(linkFor).forEach((id) => {
+    const section = document.getElementById(id);
+    if (section) observer.observe(section);
+  });
 }
 
-// In the Skills section, "**Label:** a, b, c" becomes a label plus tags.
-function buildBullet(text, section) {
-  const skill = text.match(/^\*\*(.+?)\*\*\s*(.*)$/);
-  if (section && section.id === "skills" && skill) {
-    const li = el("li");
-    li.appendChild(el("strong", skill[1].replace(/:$/, "")));
-    skill[2].split(",").forEach((s) => li.appendChild(el("span", s.trim(), "tag")));
-    return li;
-  }
-  return el("li", text);
+// On phones, the ☰ button opens and closes the link list.
+function setupMenu() {
+  const button = document.getElementById("nav-toggle");
+  const list = document.getElementById("nav-links");
+  const setOpen = (open) => {
+    button.setAttribute("aria-expanded", String(open));
+    list.classList.toggle("open", open);
+  };
+  button.addEventListener("click", () => setOpen(button.getAttribute("aria-expanded") !== "true"));
+  list.addEventListener("click", (e) => { if (e.target.tagName === "A") setOpen(false); });
 }
 
 // ---------- Run it ----------
 
+setupMenu();
+setupScrollSpy();
+
 loadSummary()
-  .then((summary) => render(parseLines(summary)))
+  .then((summary) => {
+    const data = parseResume(summary);
+    console.log("Parsed resume data:", data); // handy for checking the parser in DevTools
+    renderNav(data);
+  })
   .catch((error) => {
     const box = document.getElementById("load-error");
     box.hidden = false;

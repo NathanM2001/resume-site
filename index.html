@@ -3,36 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nathan McKenzie | Resume</title>
+  <title>Resume</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header: name, title, and contact line are filled in by script.js from resume.md -->
-  <header class="site-header">
-    <div class="container">
-      <h1 id="name"></h1>
-      <p id="tagline" class="tagline"></p>
-      <p id="contact" class="contact"></p>
+  <!-- Sticky navigation. The name is filled in by script.js from resume.md -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="#home" class="nav-name" id="nav-name"></a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links">
+        <span class="visually-hidden">Menu</span>
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+      <nav aria-label="Main">
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
-  <main class="container">
+  <main>
     <!-- Shown only if resume.md can't be loaded (for example, page opened by double-click) -->
-    <p id="load-error" class="load-error" hidden></p>
-
-    <!-- Each section starts empty. script.js fills in the heading and content from resume.md -->
-    <section id="summary" class="section"></section>
-    <section id="experience" class="section"></section>
-    <section id="projects" class="section"></section>
-    <section id="education" class="section"></section>
-    <section id="skills" class="section"></section>
-  </main>
-
-  <footer class="site-footer">
     <div class="container">
-      <p>Content from resume.md</p>
+      <p id="load-error" class="load-error" hidden></p>
     </div>
-  </footer>
+
+    <!-- Each section is filled in by script.js from resume.md (built one step at a time) -->
+    <section id="home" class="section hero"></section>
+    <section id="about" class="section"></section>
+    <section id="what-i-do" class="section"></section>
+    <section id="experience" class="section"></section>
+    <section id="skills" class="section"></section>
+    <section id="projects" class="section"></section>
+    <section id="contact" class="section"></section>
+  </main>
 
   <!-- Placeholder for the future AI chat widget (no AI code yet) -->
   <div id="chat-placeholder" class="chat-placeholder" aria-label="AI chat coming soon">
