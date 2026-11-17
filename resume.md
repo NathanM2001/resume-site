@@ -68,7 +68,7 @@ Abilene Christian University | Bachelor's degree, Management Information Systems
 ### Technical & Delivery Capabilities
 - **Deployment & Hardware Systems:** POS/SCO Terminals, PIN Pads, Zebra Mobile Devices, Canon & Lexmark Printers, Price Checkers, Barcode Scanners
 - **Field Operations & Logistics:** New Store Openings, Live Remodel Execution, Bill of Materials, Freight Coordination, Vendor Management
-- **Networking & Infrastructure:** Fortinet Switch Migrations, Cisco Meraki, Switch-Port Mapping, Structured Cabling, Ping/Reachability Testing, Intel AMT Remote Management
+- **Networking & Infrastructure:** Fortinet Switch Migrations, Cisco Meraki, Switch-Port Mapping, Ping/Reachability Testing, Intel AMT Remote Management
 - **Platforms & Service Management:** Freshservice, ServiceNow, Salesforce (Flows), AirWatch, BigFix, Estate Manager, MeshCommander, Remote Desktop, SharePoint, Microsoft Teams, Excel
 - **AI & Development:** Claude Code, Prompt Engineering, Git/GitHub, VS Code, Markdown, Node.js/npm
 <!-- WEBSITE-SUMMARY-END -->
@@ -213,7 +213,7 @@ Nathan works hands-on with the full range of retail store technology, including 
 #### Networking and infrastructure
 Nathan's networking experience is hands-on deployment and verification, not network design or advanced configuration:
 - **Fortinet migrations:** worked with technicians to physically remove Cisco Meraki switches, install new Fortinet switches, and make sure every cable was connected to the correct port. He then verified the switches were online by accessing each switch and checking its ports.
-- **Cabling and data cabinets:** works with technicians on structured cabling, patch panels, data cabinet organization, and switch-port mapping.
+- **Cabling and data cabinets:** works with technicians on patch panels, data cabinet organization, and switch-port mapping.
 - **Testing:** coordinates network testing such as ping tests and cable checks before stores open.
 - **Remote management:** configured BIOS/UEFI and Intel AMT remote management settings on in-store server cluster nodes and onboarded them remotely through MeshCommander.
 - **Wireless planning:** works with the network team on wireless access point placement and Wi-Fi surveys, which the network team designs.
