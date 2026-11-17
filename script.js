@@ -176,6 +176,26 @@ function renderNav(data) {
   document.title = data.name + " | " + data.tagline;
 }
 
+function renderHero(data) {
+  document.getElementById("hero-status").textContent = data.hero.status;
+  document.getElementById("hero-location").textContent = data.location;
+  document.getElementById("hero-intro").textContent = data.hero.intro;
+  document.getElementById("hero-photo").alt = "Headshot of " + data.name;
+
+  // Headline: wrap every "agentic AI" in a blue <span>, using text nodes only (no innerHTML).
+  const headline = document.getElementById("hero-headline");
+  data.hero.headline.split(/(agentic AI)/i).forEach((part, i) => {
+    if (part === "") return;
+    if (i % 2 === 1) headline.appendChild(el("span", part, "highlight"));
+    else headline.appendChild(document.createTextNode(part));
+  });
+
+  // Links come from the contact line in resume.md.
+  document.getElementById("hero-connect").href = data.links.linkedin;
+  document.getElementById("hero-linkedin").href = data.links.linkedin;
+  document.getElementById("hero-github").href = data.links.github;
+}
+
 // ---------- Step 5: navigation behavior ----------
 
 // Highlights the nav link for the section currently in the middle of the screen.
@@ -220,6 +240,7 @@ loadSummary()
     const data = parseResume(summary);
     console.log("Parsed resume data:", data); // handy for checking the parser in DevTools
     renderNav(data);
+    renderHero(data);
   })
   .catch((error) => {
     const box = document.getElementById("load-error");
