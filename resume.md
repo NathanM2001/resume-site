@@ -8,6 +8,24 @@
 # Nathan McKenzie
 New Store Systems Specialist | Retail Technology Deployment & Agentic AI
 Keller, TX | linkedin.com/in/nathan-mckenzie | github.com/NathanM2001
+
+### Hero
+- **Status:** Open to agentic AI roles
+- **Headline:** I'm Nathan McKenzie, a New Store Systems Specialist building agentic AI projects.
+- **Intro:** I coordinate the technology behind new store openings, live remodels, and large-scale rollouts, and I'm teaching myself agentic AI by building real projects.
+
+### Highlights
+- **110:** New stores supported with my team
+- **1,200+:** Stores reached in company-wide rollouts
+- **30:** Store network migrations
+- **5:** Overnight remodels managed
+
+### What I Do
+1. **New Store Technology Deployment:** Coordinating store technology from planning and installs through testing and grand opening.
+2. **Store Planning & Bills of Materials:** Turning construction fixture plans into equipment, data drop, and audio maps, and building each store's Bill of Materials.
+3. **Overnight Store Remodels:** Leading technicians through overnight remodels so every system works before the store opens at 9 AM.
+4. **Large-Scale Rollouts:** Supporting company-wide rollouts across 1,200+ stores, including Lexmark office printers and Canon printers for 10-minute printing.
+5. **Building AI Agents (Learning):** Teaching myself agentic AI by building real projects with Claude Code, GitHub, and prompt engineering.
  
  
 ## Summary
