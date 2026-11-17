@@ -125,8 +125,6 @@ a:hover { text-decoration: underline; }
 
 /* ===== Sections ===== */
 .section { padding: 96px 0; }
-/* TEMPORARY: gives sections that aren't built yet some height so the nav highlight can be tested. Removed in step 9. */
-.section:empty { min-height: 60vh; }
 
 /* Section heading with a short blue gradient bar underneath */
 .section-title {
@@ -526,6 +524,28 @@ a:hover { text-decoration: underline; }
   padding: 6px;
   background: linear-gradient(135deg, #3b82f6, #6366f1);
   box-shadow: 0 0 60px rgba(59, 130, 246, 0.35);
+}
+
+/* ===== Scroll animation =====
+   Items only start hidden when script.js has added the "motion" class to <html>.
+   No JavaScript (or reduced motion turned on) = no class = everything simply visible. */
+@media (prefers-reduced-motion: no-preference) {
+  .motion .reveal {
+    opacity: 0;
+    transform: translateX(-40px);
+    /* only transform and opacity animate; --delay makes cards come in one after another */
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transition-delay: var(--delay, 0s);
+  }
+  .motion .is-visible .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Reduced motion: also turn off the small hover "lift" on cards and buttons */
+@media (prefers-reduced-motion: reduce) {
+  .card:hover, .btn:hover { transform: none; }
 }
 
 /* Error message if resume.md can't load */

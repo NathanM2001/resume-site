@@ -297,19 +297,66 @@ function setupScrollSpy() {
   const links = document.querySelectorAll(".nav-links a");
   const linkFor = {};
   links.forEach((a) => { linkFor[a.getAttribute("href").slice(1)] = a; });
+  const lastId = Object.keys(linkFor).pop(); // "contact"
+
+  let middleId = null; // the section crossing the middle of the screen
+  const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+
+  // The last section is short, so it may never reach the middle of a tall screen.
+  // When the page is scrolled all the way down, highlight it anyway.
+  function refresh() {
+    const id = atBottom() ? lastId : middleId;
+    links.forEach((a) => a.removeAttribute("aria-current"));
+    if (id) linkFor[id].setAttribute("aria-current", "location");
+  }
 
   const observer = new IntersectionObserver((entries) => {
     for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      links.forEach((a) => a.removeAttribute("aria-current"));
-      linkFor[entry.target.id].setAttribute("aria-current", "location");
+      if (entry.isIntersecting) middleId = entry.target.id;
     }
+    refresh();
   }, { rootMargin: "-50% 0px -50% 0px" }); // a thin line across the middle of the screen
 
   Object.keys(linkFor).forEach((id) => {
     const section = document.getElementById(id);
     if (section) observer.observe(section);
   });
+  window.addEventListener("scroll", refresh, { passive: true });
+}
+
+// Sections slide in from the left the first time they scroll into view.
+// Runs AFTER the page is filled in, so the cards exist. Skips the hero.
+function setupScrollReveal() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion || !("IntersectionObserver" in window)) return; // leave everything visible
+
+  const sections = document.querySelectorAll(".section:not(.hero)");
+  sections.forEach((section) => {
+    // The heading and intro text first, then each card one after another (0.1s apart, capped).
+    const items = section.querySelectorAll(".section-title, .about-summary, .timeline-heading, .card");
+    items.forEach((item, i) => {
+      item.classList.add("reveal");
+      item.style.setProperty("--delay", Math.min(i, 6) * 0.1 + "s");
+      // When its slide-in finishes, drop the animation class so hover effects work normally again.
+      item.addEventListener("transitionend", function done(e) {
+        if (e.target !== item || e.propertyName !== "transform") return;
+        item.classList.remove("reveal");
+        item.removeEventListener("transitionend", done);
+      });
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add("is-visible");
+      observer.unobserve(entry.target); // only animate once
+    }
+  }, { rootMargin: "0px 0px -15% 0px" }); // starts once the section's top is 15% up from the bottom of the screen
+
+  sections.forEach((section) => observer.observe(section));
+  // Only now hide the items. If anything above failed, this line never runs and content stays visible.
+  document.documentElement.classList.add("motion");
 }
 
 // On phones, the ☰ button opens and closes the link list.
@@ -341,6 +388,7 @@ loadSummary()
     renderSkills(data);
     renderProjects(data);
     renderContact(data);
+    setupScrollReveal();
   })
   .catch((error) => {
     const box = document.getElementById("load-error");
