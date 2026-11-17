@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nathan McKenzie | Resume</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header: name, title, and contact line are filled in by script.js from resume.md -->
+  <header class="site-header">
+    <div class="container">
+      <h1 id="name"></h1>
+      <p id="tagline" class="tagline"></p>
+      <p id="contact" class="contact"></p>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Shown only if resume.md can't be loaded (for example, page opened by double-click) -->
+    <p id="load-error" class="load-error" hidden></p>
+
+    <!-- Each section starts empty. script.js fills in the heading and content from resume.md -->
+    <section id="summary" class="section"></section>
+    <section id="experience" class="section"></section>
+    <section id="projects" class="section"></section>
+    <section id="education" class="section"></section>
+    <section id="skills" class="section"></section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Content from resume.md</p>
+    </div>
+  </footer>
+
+  <!-- Placeholder for the future AI chat widget (no AI code yet) -->
+  <div id="chat-placeholder" class="chat-placeholder" aria-label="AI chat coming soon">
+    <span class="chat-icon" aria-hidden="true">💬</span>
+    <span class="chat-label">Ask my AI assistant — coming soon</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
