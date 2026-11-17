@@ -255,6 +255,19 @@ function renderExperience(data) {
   }
 }
 
+function renderSkills(data) {
+  const grid = document.getElementById("skills-grid");
+  for (const group of data.skills) {
+    const card = el("div", null, "card skill-card");
+    card.appendChild(el("h3", group.category, "skill-category"));
+    const tags = el("ul", null, "tags");
+    tags.setAttribute("role", "list");
+    group.items.forEach((item) => tags.appendChild(el("li", item, "tag")));
+    card.appendChild(tags);
+    grid.appendChild(card);
+  }
+}
+
 // ---------- Step 5: navigation behavior ----------
 
 // Highlights the nav link for the section currently in the middle of the screen.
@@ -303,6 +316,7 @@ loadSummary()
     renderAbout(data);
     renderWhatIDo(data);
     renderExperience(data);
+    renderSkills(data);
   })
   .catch((error) => {
     const box = document.getElementById("load-error");

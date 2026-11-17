@@ -301,6 +301,36 @@ a:hover { text-decoration: underline; }
 .timeline-bullets li::marker { color: var(--accent); }
 .timeline-bullets strong { color: var(--text); font-weight: 600; }
 
+/* ===== Skills ===== */
+.skills-grid {
+  display: grid;
+  /* as many columns as fit, each at least 300px wide (or the full width on tiny phones) */
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 20px;
+}
+.skill-category {
+  margin: 0 0 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tag {
+  padding: 5px 12px;
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  border-radius: 999px;
+  background: rgba(96, 165, 250, 0.08);
+  color: #bfdbfe; /* light blue, easy to read on navy */
+  font-size: 0.86rem;
+  font-weight: 500;
+}
+
 /* ===== Buttons (shared by Hero and Contact) ===== */
 .btn {
   display: inline-flex;
