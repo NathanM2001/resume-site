@@ -590,7 +590,9 @@ a:hover { text-decoration: underline; }
 /* ===== Phone layout ===== */
 @media (max-width: 760px) {
   .container { padding: 0 16px; }
-  .nav-toggle { display: block; }
+  /* margin-left: auto pushes the ☰ button to the right edge. Without it, space-between
+     puts it in the middle, because the (empty) <nav> wrapper is still the last item in the row. */
+  .nav-toggle { display: block; margin-left: auto; }
   .nav-links {
     display: none;
     position: absolute;
