@@ -268,6 +268,22 @@ function renderSkills(data) {
   }
 }
 
+function renderProjects(data) {
+  const grid = document.getElementById("projects-grid");
+  for (const project of data.projects) {
+    const card = el("article", null, "card project-card");
+    const top = el("div", null, "project-top");
+    top.appendChild(el("h3", project.title, "project-title"));
+    if (project.subtitle) top.appendChild(el("span", project.subtitle, "project-status")); // e.g. "In Progress"
+    card.appendChild(top);
+
+    const ul = el("ul", null, "project-bullets");
+    project.groups.forEach((g) => g.bullets.forEach((b) => ul.appendChild(el("li", b))));
+    card.appendChild(ul);
+    grid.appendChild(card);
+  }
+}
+
 // ---------- Step 5: navigation behavior ----------
 
 // Highlights the nav link for the section currently in the middle of the screen.
@@ -317,6 +333,7 @@ loadSummary()
     renderWhatIDo(data);
     renderExperience(data);
     renderSkills(data);
+    renderProjects(data);
   })
   .catch((error) => {
     const box = document.getElementById("load-error");
