@@ -196,6 +196,35 @@ function renderHero(data) {
   document.getElementById("hero-github").href = data.links.github;
 }
 
+function renderAbout(data) {
+  document.getElementById("about-summary").textContent = data.summary;
+
+  // One card per Highlight: big number on top, label underneath.
+  const stats = document.getElementById("about-stats");
+  for (const h of data.highlights) {
+    const card = el("div", null, "card stat");
+    card.appendChild(el("p", h.number, "stat-number"));
+    card.appendChild(el("p", h.label, "stat-label"));
+    stats.appendChild(card);
+  }
+}
+
+function renderWhatIDo(data) {
+  const list = document.getElementById("what-i-do-list");
+  data.whatIDo.forEach((item, i) => {
+    const li = el("li", null, "card service");
+    // 1 -> "01". Hidden from screen readers because the <ol> already announces the number.
+    const number = el("span", String(i + 1).padStart(2, "0"), "service-number");
+    number.setAttribute("aria-hidden", "true");
+    const text = el("div", null, "service-text");
+    text.appendChild(el("h3", item.title, "service-title"));
+    text.appendChild(el("p", item.description, "service-description"));
+    li.appendChild(number);
+    li.appendChild(text);
+    list.appendChild(li);
+  });
+}
+
 // ---------- Step 5: navigation behavior ----------
 
 // Highlights the nav link for the section currently in the middle of the screen.
@@ -241,6 +270,8 @@ loadSummary()
     console.log("Parsed resume data:", data); // handy for checking the parser in DevTools
     renderNav(data);
     renderHero(data);
+    renderAbout(data);
+    renderWhatIDo(data);
   })
   .catch((error) => {
     const box = document.getElementById("load-error");
