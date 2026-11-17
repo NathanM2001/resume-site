@@ -284,6 +284,12 @@ function renderProjects(data) {
   }
 }
 
+function renderContact(data) {
+  document.getElementById("contact-line").textContent = data.contact;
+  document.getElementById("contact-linkedin").href = data.links.linkedin;
+  document.getElementById("contact-github").href = data.links.github;
+}
+
 // ---------- Step 5: navigation behavior ----------
 
 // Highlights the nav link for the section currently in the middle of the screen.
@@ -334,6 +340,7 @@ loadSummary()
     renderExperience(data);
     renderSkills(data);
     renderProjects(data);
+    renderContact(data);
   })
   .catch((error) => {
     const box = document.getElementById("load-error");
