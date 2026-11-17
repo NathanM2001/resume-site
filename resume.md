@@ -7,7 +7,7 @@
 
 # Nathan McKenzie
 New Store Systems Specialist | Retail Technology Deployment & Agentic AI
-Keller, TX | linkedin.com/in/nathan-mckenzie | github.com/NathanM2001
+Keller, TX | linkedin.com/in/nathan-mckenzie1 | github.com/NathanM2001
 
 ### Hero
 - **Status:** Open to agentic AI roles
