@@ -173,7 +173,6 @@ function addFormattedText(node, text) {
 
 function renderNav(data) {
   document.getElementById("nav-name").textContent = data.name;
-  document.title = data.name + " | " + data.tagline;
 }
 
 function renderHero(data) {
