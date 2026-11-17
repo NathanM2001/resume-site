@@ -10,7 +10,7 @@ New Store Systems Specialist | Retail Technology Deployment & Agentic AI
 Keller, TX | linkedin.com/in/nathan-mckenzie | github.com/NathanM2001
  
  
-## Website Summary
+## Summary
  
 New Store Systems Specialist who coordinates new-store openings, live remodels, and large-scale hardware rollouts, working with vendors, freight carriers, field technicians, and IT teams to get every store ready on time. I catch problems early and solve them before they delay a grand opening. Teaching myself agentic AI by building real projects, starting with an AI resume assistant built with Claude Code, GitHub, and prompt engineering.
  
