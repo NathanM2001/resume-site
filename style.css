@@ -219,6 +219,88 @@ a:hover { text-decoration: underline; }
   color: var(--muted);
 }
 
+/* ===== Experience (two timelines) ===== */
+.experience-grid {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr; /* Work has much more content, so it gets more room */
+  gap: 48px;
+  align-items: start;
+}
+/* Education stays in view while you scroll past the long Work column (desktop only) */
+.timeline-col-sticky {
+  position: sticky;
+  top: calc(var(--nav-height) + 24px); /* just below the sticky nav */
+}
+.timeline-heading {
+  margin: 0 0 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+.timeline {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 32px;
+  list-style: none;
+}
+/* The vertical line */
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 7px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: linear-gradient(to bottom, #3b82f6, rgba(59, 130, 246, 0.1));
+}
+.timeline-item { position: relative; }
+.timeline-item + .timeline-item { margin-top: 24px; }
+/* The dot for each entry, sitting on the line */
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -32px; top: 30px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 3px solid #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+.timeline-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.timeline-subtitle {
+  margin: 2px 0 0;
+  color: var(--text);
+  font-weight: 500;
+}
+.timeline-meta {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.timeline-group {
+  margin: 22px 0 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.timeline-bullets {
+  margin: 14px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.timeline-group + .timeline-bullets { margin-top: 0; }
+.timeline-bullets li { margin-bottom: 8px; }
+.timeline-bullets li::marker { color: var(--accent); }
+.timeline-bullets strong { color: var(--text); font-weight: 600; }
+
 /* ===== Buttons (shared by Hero and Contact) ===== */
 .btn {
   display: inline-flex;
@@ -397,6 +479,11 @@ a:hover { text-decoration: underline; }
   .stat-number { font-size: 2rem; }
   .service { gap: 16px; padding: 20px 18px; }
   .service-number { font-size: 1.5rem; }
+  .experience-grid { grid-template-columns: 1fr; gap: 40px; } /* Education goes under Work */
+  .timeline-col-sticky { position: static; } /* no sticking once it's stacked under Work */
+  .timeline { padding-left: 26px; }
+  .timeline-item::before { left: -26px; width: 14px; height: 14px; }
+  .timeline::before { left: 6px; }
   .chat-placeholder { right: 16px; bottom: 16px; padding: 14px; }
   .chat-label { display: none; } /* just the round icon on phones */
 }

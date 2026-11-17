@@ -225,6 +225,36 @@ function renderWhatIDo(data) {
   });
 }
 
+// One point on a timeline: a dot (drawn by CSS) plus a card.
+function timelineItem(title, subtitle, meta) {
+  const li = el("li", null, "timeline-item");
+  const card = el("div", null, "card timeline-card");
+  card.appendChild(el("h4", title, "timeline-title"));
+  if (subtitle) card.appendChild(el("p", subtitle, "timeline-subtitle"));
+  if (meta) card.appendChild(el("p", meta.split("|").map((s) => s.trim()).join(" · "), "timeline-meta"));
+  li.appendChild(card);
+  return { li, card };
+}
+
+function renderExperience(data) {
+  const work = document.getElementById("timeline-work");
+  for (const job of data.work) {
+    const { li, card } = timelineItem(job.title, job.subtitle, job.meta);
+    for (const group of job.groups) {
+      if (group.title) card.appendChild(el("h5", group.title, "timeline-group"));
+      const ul = el("ul", null, "timeline-bullets");
+      group.bullets.forEach((b) => ul.appendChild(el("li", b))); // "**Label:** text" -> bold label
+      card.appendChild(ul);
+    }
+    work.appendChild(li);
+  }
+
+  const education = document.getElementById("timeline-education");
+  for (const school of data.education) {
+    education.appendChild(timelineItem(school.school, school.degree, school.date).li);
+  }
+}
+
 // ---------- Step 5: navigation behavior ----------
 
 // Highlights the nav link for the section currently in the middle of the screen.
@@ -272,6 +302,7 @@ loadSummary()
     renderHero(data);
     renderAbout(data);
     renderWhatIDo(data);
+    renderExperience(data);
   })
   .catch((error) => {
     const box = document.getElementById("load-error");
