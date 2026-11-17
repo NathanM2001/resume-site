@@ -26,6 +26,9 @@ Keller, TX | linkedin.com/in/nathan-mckenzie | github.com/NathanM2001
 3. **Overnight Store Remodels:** Leading technicians through overnight remodels so every system works before the store opens at 9 AM.
 4. **Large-Scale Rollouts:** Supporting company-wide rollouts across 1,200+ stores, including Lexmark office printers and Canon printers for 10-minute printing.
 5. **Building AI Agents (Learning):** Teaching myself agentic AI by building real projects with Claude Code, GitHub, and prompt engineering.
+
+### Contact
+- Want to talk? Reach out on LinkedIn.
  
  
 ## Summary
