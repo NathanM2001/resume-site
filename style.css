@@ -787,6 +787,7 @@ a:hover { text-decoration: underline; }
     border-radius: 0;
   }
   .chat-form { padding-bottom: max(14px, env(safe-area-inset-bottom)); } /* room for the iPhone home bar */
+  .chat-open body { overflow: hidden; } /* the full-screen chat is open: don't let the page behind it scroll */
   /* Just the round icon on phones. The label is hidden visually but screen readers still read it. */
   .chat-label {
     position: absolute;

@@ -370,9 +370,63 @@ function setupMenu() {
   list.addEventListener("click", (e) => { if (e.target.tagName === "A") setOpen(false); });
 }
 
+// ---------- AI chat: opening and closing the panel ----------
+
+// Scroll the conversation so the newest message is in view
+function scrollChatToLatest() {
+  const log = document.getElementById("chat-log");
+  log.scrollTop = log.scrollHeight;
+}
+
+// On phones, size the panel to the part of the screen the keyboard isn't covering.
+// iPhone's keyboard sits on top of the page, so we measure the "visual viewport"
+// (what's actually visible) and pass it to the CSS as --chat-height and --chat-top.
+function fitChatToScreen() {
+  const vv = window.visualViewport;
+  if (!vv) return; // very old browsers: the CSS 100dvh fallback is used instead
+  const panel = document.getElementById("chat-panel");
+  panel.style.setProperty("--chat-height", `${vv.height}px`);
+  panel.style.setProperty("--chat-top", `${vv.offsetTop}px`);
+  scrollChatToLatest(); // keep the latest message visible when the keyboard opens or closes
+}
+
+function setupChatPanel() {
+  const launcher = document.getElementById("chat-launcher");
+  const panel = document.getElementById("chat-panel");
+  const closeButton = document.getElementById("chat-close");
+  const input = document.getElementById("chat-input");
+
+  function openChat() {
+    panel.hidden = false;
+    launcher.setAttribute("aria-expanded", "true");
+    document.documentElement.classList.add("chat-open"); // stops the page behind scrolling on phones
+    fitChatToScreen();
+    window.visualViewport?.addEventListener("resize", fitChatToScreen);
+    window.visualViewport?.addEventListener("scroll", fitChatToScreen);
+    input.focus(); // move keyboard focus into the chat so the visitor can type right away
+  }
+
+  function closeChat() {
+    panel.hidden = true;
+    launcher.setAttribute("aria-expanded", "false");
+    document.documentElement.classList.remove("chat-open");
+    window.visualViewport?.removeEventListener("resize", fitChatToScreen);
+    window.visualViewport?.removeEventListener("scroll", fitChatToScreen);
+    launcher.focus(); // return focus to where the visitor was, so they don't get lost on the page
+  }
+
+  launcher.addEventListener("click", openChat);
+  closeButton.addEventListener("click", closeChat);
+  // Escape closes the chat from anywhere inside the panel
+  panel.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeChat();
+  });
+}
+
 // ---------- Run it ----------
 
 setupMenu();
+setupChatPanel();
 setupScrollSpy();
 
 loadSummary()
