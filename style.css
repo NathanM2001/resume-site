@@ -558,8 +558,9 @@ a:hover { text-decoration: underline; }
   border-radius: var(--radius);
 }
 
-/* ===== Chat placeholder (bottom-right). Not clickable yet: the AI chat comes in Phase E ===== */
-.chat-placeholder {
+/* ===== AI chat ===== */
+/* Launcher button (bottom-right). Hidden while the panel is open, since the panel covers that corner. */
+.chat-launcher {
   position: fixed;
   right: 24px;
   bottom: 24px;
@@ -573,9 +574,156 @@ a:hover { text-decoration: underline; }
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 999px;
   box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4), 0 0 0 6px rgba(37, 99, 235, 0.12);
+  font: inherit;
   font-size: 0.92rem;
   font-weight: 600;
-  cursor: default;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.chat-launcher:hover { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(37, 99, 235, 0.55), 0 0 0 6px rgba(37, 99, 235, 0.16); }
+.chat-launcher[aria-expanded="true"] { display: none; }
+
+/* The panel. [hidden] must win over display:flex, or it would never hide. */
+.chat-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: min(400px, calc(100vw - 48px));
+  height: min(600px, calc(100vh - var(--nav-height) - 48px));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(96, 165, 250, 0.08);
+  overflow: hidden;
+}
+.chat-panel[hidden] { display: none; }
+
+.chat-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.chat-title { margin: 0; font-size: 1.05rem; font-weight: 700; }
+.chat-subtitle { margin: 2px 0 0; font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
+
+/* 44×44px: Apple's minimum comfortable tap size */
+.chat-close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  margin: -6px -6px 0 0;
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.chat-close:hover { color: var(--text); background: rgba(148, 163, 184, 0.1); }
+.chat-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+/* Message list. It scrolls on its own; overscroll-behavior stops the page behind it from scrolling too. */
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+}
+.chat-msg {
+  max-width: 85%;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  white-space: pre-wrap;      /* keeps line breaks from the AI's answer */
+  overflow-wrap: anywhere;    /* long words or links can't push the panel wider */
+}
+.chat-msg-user {
+  align-self: flex-end;
+  background: var(--gradient);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.chat-msg-bot {
+  align-self: flex-start;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.chat-msg-error {
+  align-self: flex-start;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fecaca;
+  border-bottom-left-radius: 4px;
+}
+
+/* "Thinking…" bubble: three dots that pulse (only when motion is allowed) */
+.chat-thinking { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+.chat-dots { display: inline-flex; gap: 4px; }
+.chat-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0.6; }
+@media (prefers-reduced-motion: no-preference) {
+  .chat-dots span { animation: chat-pulse 1.2s ease-in-out infinite; }
+  .chat-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .chat-dots span:nth-child(3) { animation-delay: 0.4s; }
+}
+@keyframes chat-pulse {
+  0%, 80%, 100% { opacity: 0.25; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+.chat-form {
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.chat-input-row { display: flex; align-items: flex-end; gap: 10px; }
+.chat-input {
+  flex: 1;
+  min-width: 0;
+  resize: none;
+  padding: 10px 12px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: var(--font);
+  font-size: 16px;            /* 16px or more stops iPhone from zooming in when the box is tapped */
+  line-height: 1.4;
+}
+.chat-input::placeholder { color: var(--muted); opacity: 1; }
+.chat-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
+.chat-send {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  background: var(--gradient);
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.chat-send svg { width: 20px; height: 20px; fill: currentColor; }
+.chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+.chat-count { margin: 6px 0 0; font-size: 0.78rem; color: var(--muted); text-align: right; }
+.chat-count.is-near-limit { color: #fbbf24; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-launcher:hover { transform: none; }
 }
 .chat-icon {
   display: inline-flex;
@@ -626,7 +774,19 @@ a:hover { text-decoration: underline; }
   .contact { padding-bottom: 110px; }
   .contact-card { padding: 40px 20px; }
   .contact-actions .btn { flex: 1 1 160px; }
-  .chat-placeholder { right: 16px; bottom: 16px; padding: 8px; }
+  .chat-launcher { right: 16px; bottom: 16px; padding: 8px; }
+  /* On phones the panel fills the screen. Its height comes from --chat-height, which script.js
+     sets to the part of the screen NOT covered by the keyboard (the "visual viewport").
+     100dvh is the fallback before script.js runs. */
+  .chat-panel {
+    top: var(--chat-top, 0);
+    left: 0; right: 0; bottom: auto;
+    width: 100%;
+    height: var(--chat-height, 100dvh);
+    border: 0;
+    border-radius: 0;
+  }
+  .chat-form { padding-bottom: max(14px, env(safe-area-inset-bottom)); } /* room for the iPhone home bar */
   /* Just the round icon on phones. The label is hidden visually but screen readers still read it. */
   .chat-label {
     position: absolute;
