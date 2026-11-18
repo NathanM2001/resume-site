@@ -423,10 +423,141 @@ function setupChatPanel() {
   });
 }
 
+// ---------- AI chat: sending questions ----------
+
+// These match the limits in api/chat.js (the server checks them again)
+const CHAT_MAX_CHARS = 500;          // longest question
+const CHAT_HISTORY_MESSAGES = 6;     // past messages (3 exchanges) sent with each question
+const CHAT_MAX_ANSWER_CHARS = 4000;  // longest past answer the server accepts back
+const CHAT_TIMEOUT_MS = 30000;       // give up waiting after 30 seconds
+
+// Add one message bubble. textContent (never innerHTML) means the text is always shown
+// as plain text, so nothing in a question or answer can run as code on the page.
+function addChatMessage(text, kind) {
+  const bubble = document.createElement("p");
+  bubble.className = `chat-msg chat-msg-${kind}`; // kind: "user", "bot" or "error"
+  bubble.textContent = text;
+  document.getElementById("chat-log").appendChild(bubble);
+  scrollChatToLatest();
+  return bubble;
+}
+
+// The "Thinking…" bubble. The dots are decoration (aria-hidden); screen readers hear "Thinking…".
+function addThinkingBubble() {
+  const bubble = document.createElement("p");
+  bubble.className = "chat-msg chat-msg-bot chat-thinking";
+  const dots = document.createElement("span");
+  dots.className = "chat-dots";
+  dots.setAttribute("aria-hidden", "true");
+  for (let i = 0; i < 3; i++) dots.appendChild(document.createElement("span"));
+  const label = document.createElement("span");
+  label.textContent = "Thinking…";
+  bubble.append(dots, label);
+  document.getElementById("chat-log").appendChild(bubble);
+  scrollChatToLatest();
+  return bubble;
+}
+
+// Send the question (plus recent history) to our server and return the answer text.
+// Throws an Error with a friendly message if anything goes wrong.
+async function askAssistant(messages) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), CHAT_TIMEOUT_MS);
+  let response;
+  try {
+    response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages }),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    console.error("Chat request failed:", error);
+    throw new Error(error.name === "AbortError"
+      ? "Sorry, that took too long. Please try again."
+      : "Sorry, I couldn't reach the assistant. Please check your connection and try again.");
+  } finally {
+    clearTimeout(timer);
+  }
+
+  const data = await response.json().catch(() => ({})); // a broken reply becomes an empty object
+  if (response.ok && typeof data.reply === "string") {
+    return data.reply;
+  }
+  // The server's error messages are already written for visitors
+  throw new Error(typeof data.error === "string"
+    ? data.error
+    : "Sorry, I couldn't answer that right now. Please try again in a moment.");
+}
+
+function setupChatForm() {
+  const form = document.getElementById("chat-form");
+  const input = document.getElementById("chat-input");
+  const sendButton = document.getElementById("chat-send");
+  const count = document.getElementById("chat-count");
+
+  const history = []; // finished exchanges only, as {role, content}. Lives in memory: a refresh starts fresh.
+  let sending = false;
+
+  function updateCount() {
+    const length = input.value.length;
+    count.textContent = `${length} / ${CHAT_MAX_CHARS} characters`;
+    count.classList.toggle("is-near-limit", length >= CHAT_MAX_CHARS - 50);
+  }
+
+  input.addEventListener("input", updateCount);
+
+  // Enter sends; Shift+Enter makes a new line. isComposing skips Enter while typing
+  // in languages that use an input method (e.g. Japanese), where Enter confirms a word.
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+      e.preventDefault();
+      form.requestSubmit();
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); // stay on the page instead of reloading it
+    const question = input.value.trim();
+    if (!question || sending) return;
+    if (question.length > CHAT_MAX_CHARS) {
+      addChatMessage(`Please keep your question under ${CHAT_MAX_CHARS} characters.`, "error");
+      return;
+    }
+
+    // The input stays enabled (disabling it would close the phone keyboard); the flag blocks double sends
+    sending = true;
+    sendButton.disabled = true;
+    addChatMessage(question, "user");
+    input.value = "";
+    updateCount();
+    const thinking = addThinkingBubble();
+
+    const messages = [...history.slice(-CHAT_HISTORY_MESSAGES), { role: "user", content: question }];
+    try {
+      const reply = await askAssistant(messages);
+      thinking.remove();
+      addChatMessage(reply, "bot");
+      // Save the pair only after it succeeds, so history always goes user, assistant, user, ...
+      history.push(
+        { role: "user", content: question },
+        { role: "assistant", content: reply.slice(0, CHAT_MAX_ANSWER_CHARS) },
+      );
+    } catch (error) {
+      thinking.remove();
+      addChatMessage(error.message, "error");
+    } finally {
+      sending = false;
+      sendButton.disabled = false;
+    }
+  });
+}
+
 // ---------- Run it ----------
 
 setupMenu();
 setupChatPanel();
+setupChatForm();
 setupScrollSpy();
 
 loadSummary()
