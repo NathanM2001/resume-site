@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/chat.js": {
+      "includeFiles": "{resume.md,api/_lib/system-prompt.md}"
+    }
+  }
+}

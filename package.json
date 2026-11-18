@@ -1,0 +1,9 @@
+{
+  "name": "resume-site",
+  "private": true,
+  "type": "module",
+  "description": "Nathan McKenzie's resume site with an AI chat assistant",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.10.0"
+  }
+}
