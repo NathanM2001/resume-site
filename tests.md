@@ -4,7 +4,7 @@ Each question lists the key point a good answer must include. Run all questions 
 
 Recruiter (screening)
 - What does Nathan do in his current role? Expected: Coordinates technology for new Michaels stores and remodels, from planning and installs through testing and grand opening.
-- How many years of IT experience does he have? Expected: About 3.5 years, since 2023 (IT/Salesforce internship, then Michaels).
+- How many years of IT experience does he have? Expected: Nathan has 2+ years of professional retail IT experience at Michaels (since May 2024), plus a one-year IT internship at The Container Store (May 2023 – April 2024)
 - What's his strongest technical skill? Expected: Retail technology deployment: planning and coordinating store installs, hardware rollouts, and remote device management.
 - Why is he moving into agentic AI? Expected: Believes AI can improve productivity and take over repetitive work in enterprises; wants to grow, take on a challenge, and apply his deployment experience to AI.
 - What kind of role is he looking for? Expected: An agentic AI role building, testing, and deploying AI agents that solve real business problems, ideally in retail or enterprise.
