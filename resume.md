@@ -193,7 +193,14 @@ Before writing the content, Nathan wrote 23 test questions the assistant must ha
 ##### Progress so far
 - Set up the development environment: VS Code, Git, Node.js, and Claude Code
 - Created the GitHub repository, made the first commits, and published it
-- Wrote the project requirements, the test questions, and this resume file
+- Wrote the project requirements, the system prompt, the test questions, and this resume file
+- Directed development with Claude Code as product owner and reviewer, reviewing every change and running all Git commands himself
+- Built the site so all content loads from one source-of-truth file, then led a nine-step redesign with accessibility built in (contrast, keyboard, screen reader, reduced motion)
+- Deployed the site to Vercel with automatic deployment on every push to main, and tested it on a real iPhone
+- Built the AI chat on a feature branch: a serverless function calls the Claude API, the API key stays in server environment variables, and the server validates every request
+- Chose Claude Haiku 5.5 through eval-driven model selection and verified prompt caching in the usage logs
+- Automated the 23-question eval so it runs through the real server for under a cent; the first run scored 18 of 23, and the failures were fixed by improving the prompt and resume, then rerun
+- Next: finish testing, merge through a pull request to go live, then write the README and record a demo
 ##### Next steps
 Build the website, deploy it to Vercel, add the AI chat on a separate branch using a pull request, test it against the 23 questions, and write the README.
  
