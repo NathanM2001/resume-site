@@ -15,6 +15,7 @@ I'm a beginner learning software development and agentic AI for an interview. I'
 - Secrets: never put API keys or secrets in code. I want you to read them from environment variables on the server only.
 - The browser must never call the AI API directly; it calls our /api/chat server function
 - resume.md has two parts. The website must only display the text between <!-- WEBSITE-SUMMARY-START --> and <!-- WEBSITE-SUMMARY-END -->. The AI chat must only use the text between <!-- AI-DETAILS-START --> and <!-- AI-DETAILS-END -->.
+- No hype words like rare, exceptional, or unique; let the facts speak.
 
 
 ## Files
