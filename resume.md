@@ -179,8 +179,8 @@ Nathan sees AI coding agents the way many engineering teams now do: they speed u
 - **AI developer:** Claude Code
 - **Version control:** Git and GitHub
 - **Website:** HTML, CSS, and JavaScript
-- **Hosting:** Vercel (planned), which redeploys the site automatically each time new code is pushed to GitHub
-- **AI model:** Claude, through the Claude API (planned)
+- **Hosting:** Vercel, which redeploys the site automatically each time new code is pushed to GitHub
+- **AI model:** Claude, through the Claude API
 ##### Design decisions
 - **One source of truth:** the resume file feeds both the website and the AI assistant, so information only needs to be updated in one place.
 - **Secrets stay on the server:** the API key is stored in an environment variable, never in the code or on GitHub. A .gitignore file was set up before any code was written so secret files can't be saved by accident.
